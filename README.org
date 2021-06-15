@@ -1,0 +1,20 @@
+#+OPTIONS: toc:nil
+
+* Repository of my personal emacs configuration
+
+  This repository is contains all the package I'm currently using in **Emacs**.
+
+** Installation
+   This step supposed that you have already installed a *vanilla emacs* on your PC.
+   If you run the following command, the config will be imported.
+   #+begin_src shell
+     git clone https://github.com/NewMirai/dotemacs.git ~/.emacs.d
+   #+end_src
+
+*** LSP-DAP mode
+   For ~lsp-mode~ and ~dap-mode~ please refer to their websites for installation
+   instructions([[https://emacs-lsp.github.io/lsp-mode/][lsp-mode]],[[https://github.com/emacs-lsp/dap-mode][dap-mode]]).
+
+*** Vterm
+    To get ~Vterm~ working you need install it separately from *Emacs* (see
+    [[https://github.com/akermu/emacs-libvterm][here]] for installation instructions).
