@@ -1,10 +1,14 @@
-#+TITLE: Personal emacs configuration
+#+TITLE: Personal Emacs configuration
 #+AUTHOR: Alain Anghelidi
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el
 
 * Configuration 
 
+  Below is my *Emacs* configuration that tangle its content in ~init.el~ using the
+  ~org-babel-tangle~ command.
+
 ** Basics
+   Below are all the customizations used for the general look and feel of my *Emacs*.
    #+begin_src emacs-lisp 
      (setq inhibit-startup-message t)
 
@@ -44,6 +48,7 @@
    #+end_src
 
 ** Packages
+   This section is all about setting up package managers in *Emacs*.
    #+begin_src emacs-lisp
      ;; Initialize package sources
      (require 'package)
@@ -75,11 +80,14 @@
    #+end_src
 
 ** Vterm
+   Set up for `vterm`.
    #+begin_src emacs-lisp
      (use-package vterm
 	 :ensure t)
    #+end_src
 ** Themes
+   This section is all about the look of *Emacs*. I'm currently using the beautiful
+   ~modus-themes~. See [[https://protesilaos.com/modus-themes/][here]] for more info.
    #+begin_src emacs-lisp
      (use-package all-the-icons
        :ensure t)
@@ -105,6 +113,7 @@
    #+end_src
 
 ** Web browsing
+   I'm a big fan of ~webjump~ that allow me to quickly launch search and favorite websites with my default external browser.
    #+begin_src emacs-lisp
      (use-package webjump
        :custom
@@ -118,6 +127,7 @@
        :bind ("C-c j" . webjump))
    #+end_src
 ** PDFs
+   This part make ~pdf-tools~ the default PDFs reader in *Emacs*.
    #+begin_src emacs-lisp
      (use-package pdf-tools-install
        :ensure pdf-tools
@@ -133,6 +143,7 @@
        (pdf-loader-install))
    #+end_src
 ** Org
+   In this section all my org-related configuration are stored.
    #+begin_src emacs-lisp
      ;; Org mode latest version
      (use-package org
@@ -218,6 +229,7 @@
       '((ditaa . t))) ; this line activates ditaa
    #+end_src
 ** Projects/files
+   This section provides utils for browsing files and projects.
    #+begin_src emacs-lisp
       (use-package which-key
 	:ensure t
@@ -294,6 +306,7 @@
    #+end_src
 
 ** Git related
+   ~Magit~ and ~Forge~ for git related stuff. Also currently testing ~orgit~ and ~orgit-forge~ to interact with ~org-mode~.
    #+begin_src emacs-lisp
      ;; Git setup
      (use-package magit
@@ -313,6 +326,7 @@
    #+end_src
    
 ** LSP related
+   My ~LSP~ configuration.
    #+begin_src emacs-lisp
      (use-package lsp-julia
        :ensure t
@@ -403,6 +417,7 @@
        :init (global-flycheck-mode))
        #+end_src
 ** Python
+   My *Python* configuration. ~Pyright~ is my preferred implementation of lsp server.
    #+begin_src emacs-lisp
      ;; Python setup
      (use-package python
@@ -439,6 +454,7 @@
    #+end_src
    
 ** R
+   ~ESS~ is a must-have is combination with ~LSP~ for R development. Below is my configuration for ~ESS~.
    #+begin_src emacs-lisp
      (use-package ess
        :ensure t
@@ -456,6 +472,7 @@
 
    #+end_src
 ** C/C++
+   Config for *C/C++* development.
    #+begin_src emacs-lisp
      (use-package ccls
        :ensure t
@@ -465,6 +482,7 @@
 	      (lambda () (require 'ccls) (lsp))))
    #+end_src
 ** Rust
+   I enjoy using this config to learn *Rust* however I can't make the debugger working at the moment...
    #+begin_src emacs-lisp
      (use-package rustic
        :ensure t
@@ -473,6 +491,7 @@
        (setq rustic-format-on-save t))
    #+end_src
 ** Go
+   Simple *Go* environment. Everything works!!
    #+begin_src emacs-lisp
      (use-package go-mode
        :ensure t)
@@ -485,6 +504,7 @@
      (provide 'gopls-config)
    #+end_src 
 ** Julia
+   *Julia* config. The config works but the startup time of the langage server is painful...
    #+begin_src emacs-lisp
      (use-package julia-mode
        :ensure t)
@@ -499,6 +519,7 @@
        (setq vterm-kill-buffer-on-exit nil))
    #+end_src
 ** Evil
+   I became addicted of some Vim shortcuts. So I use a mix of *Vim* and *Emacs** command.
    #+begin_src emacs-lisp
      ;; Vim keys
      (use-package evil
@@ -529,6 +550,7 @@
      (add-hook 'vterm-mode-hook #'evil-collection-vterm-escape-stay)
    #+end_src
 ** Yasnippet
+   Yasnippet is a useful package to define snippets in *Emacs*. All the snippets must be placed in ~~/.emacs.d/snippets~. You can also change the location if you want.
    #+begin_src emacs-lisp
      (use-package yasnippet
       :ensure t
@@ -544,10 +566,12 @@
    #+end_src
 
 ** Latex
+   Some *LaTeX* utils.
    #+begin_src emacs-lisp
    (use-package tex :defer t :ensure auctex :config (setq TeX-auto-save t))
    #+end_src
 ** Utils el
+   Some utils and packages I use. 
    #+begin_src emacs-lisp
      (use-package exec-path-from-shell
        :ensure t)
@@ -562,6 +586,7 @@
    #+end_src
 
 ** YAML
+   For editing YAML file.
    #+begin_src emacs-lisp
      (use-package yaml-mode
        :ensure t)

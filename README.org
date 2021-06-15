@@ -3,9 +3,9 @@
 * Repository of my personal emacs configuration
 
   This repository is contains all the package I'm currently using in *Emacs*.
-
+  The literal configuration file can be read [[file:init-config.org][here]].
 ** Installation
-   This step assumes that you have already installed a *vanilla emacs* on your PC.
+   This step assumes that you have already installed a *vanilla Emacs* on your PC.
    If you run the following command, the config will be imported.
    #+begin_src shell
      git clone https://github.com/NewMirai/dotemacs.git ~/.emacs.d
