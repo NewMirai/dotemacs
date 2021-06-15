@@ -13,8 +13,8 @@
 
 *** LSP-DAP mode
    For ~lsp-mode~ and ~dap-mode~ please refer to their websites for installation
-   instructions([[https://emacs-lsp.github.io/lsp-mode/][lsp-mode]],[[https://github.com/emacs-lsp/dap-mode][dap-mode]]).
+   instructions ([[https://emacs-lsp.github.io/lsp-mode/][lsp-mode]],[[https://github.com/emacs-lsp/dap-mode][dap-mode]]).
 
 *** Vterm
-    To get ~Vterm~ working you need install it separately from *Emacs* (see
+    To get ~Vterm~ working you need to install it separately from *Emacs* (see
     [[https://github.com/akermu/emacs-libvterm][here]] for installation instructions).
