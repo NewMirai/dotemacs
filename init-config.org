@@ -49,8 +49,6 @@
 
 ** Abbrev
    #+begin_src emacs-lisp
-     ;; turn on abbrev mode globally
-     (setq-default abbrev-mode t)
      ;; Only for text
      (add-hook 'text-mode-hook #'abbrev-mode)
    #+end_src

@@ -34,8 +34,6 @@
 
 (setq lsp-keymap-prefix "C-c l")
 
-;; turn on abbrev mode globally
-(setq-default abbrev-mode t)
 ;; Only for text
 (add-hook 'text-mode-hook #'abbrev-mode)
 
