@@ -3,10 +3,7 @@
 # key: tf
 # group : testing
 # --
-import unittest
-${1:from ${2:test_file} import *}
+import pytest
+${1:from ${2:path_file} import $3}
 
 $0
-
-if __name__ == '__main__':
-    unittest.main()

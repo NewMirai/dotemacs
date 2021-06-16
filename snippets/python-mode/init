@@ -3,6 +3,6 @@
 # key: init
 # group : definitions
 # --
-def __init__(self${1:, args}):
+def __init__(self${1:, args}) -> None:
     ${2:"${3:docstring}"
     }$0
