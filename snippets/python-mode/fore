@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: for ... in enumerate(...) : ...
+# key: fore
+# group : control structure
+# --
+for ${idx}, ${var} in enumerate(${collection}):
+    $0

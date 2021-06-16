@@ -34,6 +34,11 @@
 
 (setq lsp-keymap-prefix "C-c l")
 
+;; turn on abbrev mode globally
+(setq-default abbrev-mode t)
+;; Only for text
+(add-hook 'text-mode-hook #'abbrev-mode)
+
 ;; Initialize package sources
 (require 'package)
 
@@ -414,8 +419,6 @@ With a prefix ARG, remove start location."
   :config
   (require 'ess-r-mode)
   (define-key ess-r-mode-map "C-c C-=" 'ess-cycle-assign)
-  (define-key ess-r-mode-map "M-p" "%>%")
-  (define-key inferior-ess-r-mode-map "M-p" "%>%")
   (define-key inferior-ess-r-mode-map "C-c C-=" 'ess-cycle-assign))
 
 (use-package ccls
@@ -512,16 +515,3 @@ not appropriate in some cases like terminals."
 (add-hook 'yaml-mode-hook
 	  '(lambda ()
 	     (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(chess yasnippet-snippets yaml-mode which-key vterm shrink-path selectrum rustic rainbow-delimiters quelpa-use-package python-mode pyenv-mode ox-hugo orgit-forge org-noter-pdftools org-bullets orderless nano-theme modus-themes marginalia lsp-ui lsp-python-ms lsp-pyright lsp-julia lsp-ivy julia-repl ivy-rich helpful go-mode flycheck exec-path-from-shell evil-collection ess epc embark-consult dap-mode counsel-projectile company-box ccls auctex all-the-icons)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )

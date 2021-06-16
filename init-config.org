@@ -47,6 +47,13 @@
      (setq lsp-keymap-prefix "C-c l")
    #+end_src
 
+** Abbrev
+   #+begin_src emacs-lisp
+     ;; turn on abbrev mode globally
+     (setq-default abbrev-mode t)
+     ;; Only for text
+     (add-hook 'text-mode-hook #'abbrev-mode)
+   #+end_src
 ** Packages
    This section is all about setting up package managers in *Emacs*.
    #+begin_src emacs-lisp
@@ -466,8 +473,6 @@
        :config
        (require 'ess-r-mode)
        (define-key ess-r-mode-map "C-c C-=" 'ess-cycle-assign)
-       (define-key ess-r-mode-map "M-p" "%>%")
-       (define-key inferior-ess-r-mode-map "M-p" "%>%")
        (define-key inferior-ess-r-mode-map "C-c C-=" 'ess-cycle-assign))
 
    #+end_src

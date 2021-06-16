@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: import data library
+# key: ipds
+# group : data_science
+# --
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+$0
