@@ -454,7 +454,7 @@
    #+end_src
    
 ** R
-   ~ESS~ is a must-have is combination with ~LSP~ for R development. Below is my configuration for ~ESS~.
+   ~ESS~ is a must-have in combination with ~LSP~ for R development. Below is my configuration for ~ESS~.
    #+begin_src emacs-lisp
      (use-package ess
        :ensure t
