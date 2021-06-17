@@ -229,7 +229,8 @@ With a prefix ARG, remove start location."
 
 ;; Configuration for Consult
 (use-package consult
-  :ensure t)
+  :ensure t
+  :bind ("C-s" . consult-line))
 
 (use-package embark
   :ensure t
