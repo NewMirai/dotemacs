@@ -436,6 +436,14 @@
        :ensure t)
      (pyenv-mode)
 
+     (use-package python-isort
+       :ensure t
+       :hook (python-mode . python-isort-on-save-mode))
+
+     (use-package python-black
+       :ensure t
+       :hook (python-mode . python-black-on-save-mode))
+
      (require 'pyenv-mode)
 
      (defun projectile-pyenv-mode-set ()
