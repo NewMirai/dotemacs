@@ -75,13 +75,6 @@
      ;; Install quelpa
      (use-package quelpa
        :ensure t)
-
-     ;; integrate it with use-package
-     (quelpa
-      '(quelpa-use-package
-	:fetcher git
-	:url "https://github.com/quelpa/quelpa-use-package.git"))
-     (require 'quelpa-use-package)
    #+end_src
 
 ** Vterm
@@ -91,30 +84,19 @@
 	 :ensure t)
    #+end_src
 ** Themes
-   This section is all about the look of *Emacs*. I'm currently using the beautiful
-   ~modus-themes~. See [[https://protesilaos.com/modus-themes/][here]] for more info.
    #+begin_src emacs-lisp
      (use-package all-the-icons
        :ensure t)
-
-     (use-package modus-themes
-       :ensure t                        ; omit this to use the built-in themes
-       :init
-       ;; Add all your customizations prior to loading the themes
-       (setq modus-themes-slanted-constructs t
-	     modus-themes-bold-constructs nil
-	     modus-themes-region 'no-extend)
-       ;; Load the theme files before enabling a theme (else you get an error).
-       (modus-themes-load-themes)
-       :config
-       ;; Load the theme of your choice:
-       (modus-themes-load-vivendi)
-       :bind ("<f5>" . modus-themes-toggle))
-
-
+     
      (use-package rainbow-delimiters
        :ensure t
        :hook (prog-mode . rainbow-delimiters-mode))
+     
+     (use-package doom-themes
+       :ensure t
+       :config
+       (load-theme 'doom-solarized-dark-high-contrast t)
+       (doom-themes-org-config))
    #+end_src
 
 ** Web browsing
@@ -167,48 +149,6 @@
      (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 
      (setq org-confirm-babel-evaluate nil)
-
-     (use-package org-noter
-       :ensure t)
-     (require 'org-noter-pdftools)
-
-     (use-package org-pdftools
-       :ensure t
-       :hook (org-mode . org-pdftools-setup-link))
-
-     (use-package org-noter-pdftools
-       :ensure t
-       :after org-noter
-       :config
-       ;; Add a function to ensure precise note is inserted
-       (defun org-noter-pdftools-insert-precise-note (&optional toggle-no-questions)
-	 (interactive "P")
-	 (org-noter--with-valid-session
-	  (let ((org-noter-insert-note-no-questions (if toggle-no-questions
-							(not org-noter-insert-note-no-questions)
-						      org-noter-insert-note-no-questions))
-		(org-pdftools-use-isearch-link t)
-		(org-pdftools-use-freestyle-annot t))
-	    (org-noter-insert-note (org-noter--get-precise-info)))))
-
-       ;; fix https://github.com/weirdNox/org-noter/pull/93/commits/f8349ae7575e599f375de1be6be2d0d5de4e6cbf
-       (defun org-noter-set-start-location (&optional arg)
-	 "When opening a session with this document, go to the current location.
-     With a prefix ARG, remove start location."
-	 (interactive "P")
-	 (org-noter--with-valid-session
-	  (let ((inhibit-read-only t)
-		(ast (org-noter--parse-root))
-		(location (org-noter--doc-approx-location (when (called-interactively-p 'any) 'interactive))))
-	    (with-current-buffer (org-noter--session-notes-buffer session)
-	      (org-with-wide-buffer
-	       (goto-char (org-element-property :begin ast))
-	       (if arg
-		   (org-entry-delete nil org-noter-property-note-location)
-		 (org-entry-put nil org-noter-property-note-location
-				(org-noter--pretty-print-location location))))))))
-       (with-eval-after-load 'pdf-annot
-	 (add-hook 'pdf-annot-activate-handler-functions #'org-noter-pdftools-jump-to-note)))
 
      ;; org-bullet
      (use-package org-bullets
@@ -423,7 +363,7 @@
        :init (global-flycheck-mode))
        #+end_src
 ** Python
-   My *Python* configuration. ~Pyright~ is my preferred implementation of lsp server.
+   My *Python* configuration.Trying out lsp jedi. 
    #+begin_src emacs-lisp
      ;; Python setup
      (use-package python
@@ -432,39 +372,37 @@
        (python-shell-interpreter "python")
        (python-shell-interpreter-args "-i")
        (python-indent-offset 4))
-
+     
      (use-package pyenv-mode
        :ensure t)
      (pyenv-mode)
-
+     
      (use-package python-isort
        :ensure t
        :hook (python-mode . python-isort-on-save-mode))
-
+     
      (use-package python-black
        :ensure t
        :hook (python-mode . python-black-on-save-mode))
-
+     
      (require 'pyenv-mode)
-
+     
      (defun projectile-pyenv-mode-set ()
        "Set pyenv version matching project name."
        (let ((project (projectile-project-name)))
 	 (if (member project (pyenv-mode-versions))
 	     (pyenv-mode-set project)
 	   (pyenv-mode-unset))))
-
+     
      (add-hook 'projectile-after-switch-project-hook 'projectile-pyenv-mode-set)
-
-     (use-package lsp-pyright
+     
+     (use-package lsp-jedi
        :ensure t
-       :custom
-       (setq lsp-pyright-auto-import-completions t)
-       (setq lsp-pyright-diagnostic-mode "workspace")
-       (setq lsp-pyright-typechecking-mode "basic")
-       :hook (python-mode . (lambda ()
-			       (require 'lsp-pyright)
-			       (lsp))))
+       :config
+       (with-eval-after-load "lsp-mode"
+	 (add-to-list 'lsp-disabled-clients 'pyls)
+	 (add-to-list 'lsp-enabled-clients 'jedi)))
+     
    #+end_src
    
 ** R

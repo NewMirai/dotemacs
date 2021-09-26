@@ -58,37 +58,21 @@
 (use-package quelpa
   :ensure t)
 
-;; integrate it with use-package
-(quelpa
- '(quelpa-use-package
-   :fetcher git
-   :url "https://github.com/quelpa/quelpa-use-package.git"))
-(require 'quelpa-use-package)
-
 (use-package vterm
     :ensure t)
 
 (use-package all-the-icons
   :ensure t)
 
-(use-package modus-themes
-  :ensure t                        ; omit this to use the built-in themes
-  :init
-  ;; Add all your customizations prior to loading the themes
-  (setq modus-themes-slanted-constructs t
-	modus-themes-bold-constructs nil
-	modus-themes-region 'no-extend)
-  ;; Load the theme files before enabling a theme (else you get an error).
-  (modus-themes-load-themes)
-  :config
-  ;; Load the theme of your choice:
-  (modus-themes-load-vivendi)
-  :bind ("<f5>" . modus-themes-toggle))
-
-
 (use-package rainbow-delimiters
   :ensure t
   :hook (prog-mode . rainbow-delimiters-mode))
+
+(use-package doom-themes
+  :ensure t
+  :config
+  (load-theme 'doom-solarized-dark-high-contrast t)
+  (doom-themes-org-config))
 
 (use-package webjump
   :custom
@@ -131,48 +115,6 @@
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 
 (setq org-confirm-babel-evaluate nil)
-
-(use-package org-noter
-  :ensure t)
-(require 'org-noter-pdftools)
-
-(use-package org-pdftools
-  :ensure t
-  :hook (org-mode . org-pdftools-setup-link))
-
-(use-package org-noter-pdftools
-  :ensure t
-  :after org-noter
-  :config
-  ;; Add a function to ensure precise note is inserted
-  (defun org-noter-pdftools-insert-precise-note (&optional toggle-no-questions)
-    (interactive "P")
-    (org-noter--with-valid-session
-     (let ((org-noter-insert-note-no-questions (if toggle-no-questions
-						   (not org-noter-insert-note-no-questions)
-						 org-noter-insert-note-no-questions))
-	   (org-pdftools-use-isearch-link t)
-	   (org-pdftools-use-freestyle-annot t))
-       (org-noter-insert-note (org-noter--get-precise-info)))))
-
-  ;; fix https://github.com/weirdNox/org-noter/pull/93/commits/f8349ae7575e599f375de1be6be2d0d5de4e6cbf
-  (defun org-noter-set-start-location (&optional arg)
-    "When opening a session with this document, go to the current location.
-With a prefix ARG, remove start location."
-    (interactive "P")
-    (org-noter--with-valid-session
-     (let ((inhibit-read-only t)
-	   (ast (org-noter--parse-root))
-	   (location (org-noter--doc-approx-location (when (called-interactively-p 'any) 'interactive))))
-       (with-current-buffer (org-noter--session-notes-buffer session)
-	 (org-with-wide-buffer
-	  (goto-char (org-element-property :begin ast))
-	  (if arg
-	      (org-entry-delete nil org-noter-property-note-location)
-	    (org-entry-put nil org-noter-property-note-location
-			   (org-noter--pretty-print-location location))))))))
-  (with-eval-after-load 'pdf-annot
-    (add-hook 'pdf-annot-activate-handler-functions #'org-noter-pdftools-jump-to-note)))
 
 ;; org-bullet
 (use-package org-bullets
@@ -406,15 +348,12 @@ With a prefix ARG, remove start location."
 
 (add-hook 'projectile-after-switch-project-hook 'projectile-pyenv-mode-set)
 
-(use-package lsp-pyright
+(use-package lsp-jedi
   :ensure t
-  :custom
-  (setq lsp-pyright-auto-import-completions t)
-  (setq lsp-pyright-diagnostic-mode "workspace")
-  (setq lsp-pyright-typechecking-mode "basic")
-  :hook (python-mode . (lambda ()
-			  (require 'lsp-pyright)
-			  (lsp))))
+  :config
+  (with-eval-after-load "lsp-mode"
+    (add-to-list 'lsp-disabled-clients 'pyls)
+    (add-to-list 'lsp-enabled-clients 'jedi)))
 
 (use-package ess
   :ensure t
