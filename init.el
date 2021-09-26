@@ -229,12 +229,6 @@
   :after forge
   :ensure t)
 
-(use-package lsp-julia
-  :ensure t
-  :custom (setq lsp-julia-default-environment "~/.julia/environments/v1.6")
-  (setq lsp-julia-default-depot "~/.julia"))
-
-
 ;; LSP mode
 (use-package lsp-mode
   :ensure t
@@ -255,7 +249,6 @@
 	 (cuda-mode . lsp)
 	 (go-mode . lsp)
 	 (latex-mode . lsp)
-	 (julia-mode . lsp)
 	 (lsp-enable-which-key-integration . lsp)
   :commands lsp)
 
@@ -329,14 +322,6 @@
   :ensure t)
 (pyenv-mode)
 
-(use-package python-isort
-  :ensure t
-  :hook (python-mode . python-isort-on-save-mode))
-
-(use-package python-black
-  :ensure t
-  :hook (python-mode . python-black-on-save-mode))
-
 (require 'pyenv-mode)
 
 (defun projectile-pyenv-mode-set ()
@@ -348,12 +333,15 @@
 
 (add-hook 'projectile-after-switch-project-hook 'projectile-pyenv-mode-set)
 
-(use-package lsp-jedi
-  :ensure t
-  :config
-  (with-eval-after-load "lsp-mode"
-    (add-to-list 'lsp-disabled-clients 'pyls)
-    (add-to-list 'lsp-enabled-clients 'jedi)))
+(use-package lsp-pyright
+ :ensure t
+ :custom
+ (setq lsp-pyright-auto-import-completions t)
+ (setq lsp-pyright-diagnostic-mode "workspace")
+ (setq lsp-pyright-typechecking-mode "basic")
+ :hook (python-mode . (lambda ()
+			   (require 'lsp-pyright)
+			   (lsp))))
 
 (use-package ess
   :ensure t
@@ -451,9 +439,6 @@ not appropriate in some cases like terminals."
 
 (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize))
-
-(use-package s
-  :ensure t)
 
 (use-package yaml-mode
   :ensure t)
