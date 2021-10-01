@@ -77,8 +77,8 @@
 (use-package webjump
   :custom
   (webjump-sites '(("Github" . "https://github.com/NewMirai")
-      ("Web search[Startpage]" .
-       [simple-query "www.startpage.com" "https://www.startpage.com/do/search?q=" ""])
+      ("Web search[DuckDuckgo]" .
+       [simple-query "www.duckduckgo.com" "https://www.duckduckgo.com/?q=" ""])
       ("Youtube search" .
        [simple-query "www.youtube.com" "https://www.youtube.com/results?search_query=" ""])
       ("StackOverflow" .
@@ -343,6 +343,12 @@
 			   (require 'lsp-pyright)
 			   (lsp))))
 
+(use-package numpydoc
+  :ensure t
+  :after python
+  :bind (:map python-mode-map
+	      ("C-c d" . numpydoc-generate)))
+
 (use-package ess
   :ensure t
   :custom
@@ -446,3 +452,16 @@ not appropriate in some cases like terminals."
 (add-hook 'yaml-mode-hook
 	  '(lambda ()
 	     (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(numpydoc yasnippet-snippets yaml-mode which-key vterm use-package selectrum rustic rainbow-delimiters quelpa python-isort python-black pyenv-mode projectile ox-hugo orgit-forge org-noter-pdftools org-bullets orderless marginalia lsp-ui lsp-pyright lsp-julia lsp-jedi julia-repl go-mode flycheck exec-path-from-shell evil-collection ess embark-consult doom-themes dap-mode company-box ccls auctex all-the-icons)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

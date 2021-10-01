@@ -105,8 +105,8 @@
      (use-package webjump
        :custom
        (webjump-sites '(("Github" . "https://github.com/NewMirai")
-	   ("Web search[Startpage]" .
-	    [simple-query "www.startpage.com" "https://www.startpage.com/do/search?q=" ""])
+	   ("Web search[DuckDuckgo]" .
+	    [simple-query "www.duckduckgo.com" "https://www.duckduckgo.com/?q=" ""])
 	   ("Youtube search" .
 	    [simple-query "www.youtube.com" "https://www.youtube.com/results?search_query=" ""])
 	   ("StackOverflow" .
@@ -390,6 +390,12 @@
       :hook (python-mode . (lambda ()
 				(require 'lsp-pyright)
 				(lsp))))
+     
+     (use-package numpydoc
+       :ensure t
+       :after python
+       :bind (:map python-mode-map
+		   ("C-c d" . numpydoc-generate)))
    #+end_src
    
 ** R
