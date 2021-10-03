@@ -438,6 +438,14 @@ not appropriate in some cases like terminals."
 
 (use-package tex :defer t :ensure auctex :config (setq TeX-auto-save t))
 
+(use-package markdown-mode
+  :ensure t
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+	 ("\\.md\\'" . markdown-mode)
+	 ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "multimarkdown"))
+
 (use-package exec-path-from-shell
   :ensure t)
 
@@ -452,16 +460,3 @@ not appropriate in some cases like terminals."
 (add-hook 'yaml-mode-hook
 	  '(lambda ()
 	     (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(numpydoc yasnippet-snippets yaml-mode which-key vterm use-package selectrum rustic rainbow-delimiters quelpa python-isort python-black pyenv-mode projectile ox-hugo orgit-forge org-noter-pdftools org-bullets orderless marginalia lsp-ui lsp-pyright lsp-julia lsp-jedi julia-repl go-mode flycheck exec-path-from-shell evil-collection ess embark-consult doom-themes dap-mode company-box ccls auctex all-the-icons)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )

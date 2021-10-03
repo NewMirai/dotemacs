@@ -513,6 +513,16 @@
    #+begin_src emacs-lisp
    (use-package tex :defer t :ensure auctex :config (setq TeX-auto-save t))
    #+end_src
+** Markdown
+   #+begin_src emacs-lisp
+     (use-package markdown-mode
+       :ensure t
+       :commands (markdown-mode gfm-mode)
+       :mode (("README\\.md\\'" . gfm-mode)
+	      ("\\.md\\'" . markdown-mode)
+	      ("\\.markdown\\'" . markdown-mode))
+       :init (setq markdown-command "multimarkdown"))
+   #+end_src
 ** Utils el
    Some utils and packages I use. 
    #+begin_src emacs-lisp
