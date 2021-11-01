@@ -340,7 +340,7 @@
        :init (global-flycheck-mode))
        #+end_src
 ** Python
-   My *Python* configuration.Trying out lsp jedi. 
+   My *Python* configuration.Using *Pyright* language server.
    #+begin_src emacs-lisp
      ;; Python setup
      (use-package python
