@@ -34,6 +34,20 @@
 
 (setq lsp-keymap-prefix "C-c l")
 
+;; Window move
+
+(global-set-key (kbd "C-c <left>")  'windmove-left)
+(global-set-key (kbd "C-c <right>") 'windmove-right)
+(global-set-key (kbd "C-c <up>")    'windmove-up)
+(global-set-key (kbd "C-c <down>")  'windmove-down)
+
+;; Clock display
+(display-time-mode 1)
+
+;; Delight
+(use-package delight
+  :ensure t)
+
 ;; Only for text
 (add-hook 'text-mode-hook #'abbrev-mode)
 
@@ -68,22 +82,39 @@
   :ensure t
   :hook (prog-mode . rainbow-delimiters-mode))
 
-(use-package doom-themes
-  :ensure t
+(use-package modus-themes
+  :ensure
+  :init
+  ;; Add all your customizations prior to loading the themes
+  (setq modus-themes-italic-constructs t
+	modus-themes-bold-constructs nil
+	modus-themes-region '(bg-only no-extend))
+
+  ;; Load the theme files before enabling a theme
+  (modus-themes-load-themes)
   :config
-  (load-theme 'doom-solarized-dark-high-contrast t)
-  (doom-themes-org-config))
+  ;; Load the theme of your choice:
+  (modus-themes-load-operandi)) ;; OR (modus-themes-load-vivendi))
 
 (use-package webjump
   :custom
   (webjump-sites '(("Github" . "https://github.com/NewMirai")
       ("Web search[DuckDuckgo]" .
        [simple-query "www.duckduckgo.com" "https://www.duckduckgo.com/?q=" ""])
+      ("Google search" .
+       [simple-query "www.google.com" "https://www.google.com/?q=" ""])
       ("Youtube search" .
        [simple-query "www.youtube.com" "https://www.youtube.com/results?search_query=" ""])
       ("StackOverflow" .
        [simple-query "www.stackoverflow.com" "https:://www.stackoverflow.com/search?q=" ""])))
   :bind ("C-c j" . webjump))
+
+(use-package dashboard
+  :ensure t
+  :delight
+  :config
+  (dashboard-setup-startup-hook)
+  (setq dashboard-startup-banner 'logo))
 
 (use-package pdf-tools-install
   :ensure pdf-tools
@@ -121,24 +152,6 @@
   :ensure t
   :hook (org-mode . org-bullets-mode))
 
-;; org-git
-(use-package orgit
-  :after magit
-  :ensure t)
-
-(use-package orgit-forge
-  :after forge
-  :ensure t)
-
-(use-package ox-hugo
-  :ensure t
-  :after ox)
-
-;; Activate dita
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((ditaa . t))) ; this line activates ditaa
-
 (use-package which-key
    :ensure t
    :init (which-key-mode)
@@ -172,7 +185,9 @@
 ;; Configuration for Consult
 (use-package consult
   :ensure t
-  :bind ("C-s" . consult-line))
+  :bind
+  ("C-s" . consult-line)
+  ("M-g g" . consult-goto-line))
 
 (use-package embark
   :ensure t
@@ -221,14 +236,6 @@
   :after magit
   :ensure t)
 
-(use-package orgit
-  :after magit
-  :ensure t)
-
-(use-package orgit-forge
-  :after forge
-  :ensure t)
-
 ;; LSP mode
 (use-package lsp-mode
   :ensure t
@@ -238,15 +245,9 @@
   (lsp-signature-render-documentation nil)
   (lsp-enable-file-watchers nil)
   (lsp-log-io nil)
-  (lsp-rust-analyzer-cargo-watch-command "clippy")
-  (lsp-rust-analyzer-server-display-inlay-hints t) 
-  :hook (python-mode . lsp)
-	 (c-mode . lsp)
-	 (c++-mode . lsp)
+   :hook (python-mode . lsp)
 	 (ess-r-mode . lsp)
 	 (inferior-ess-r-mode . lsp)
-	 (objc-mode . lsp)
-	 (cuda-mode . lsp)
 	 (go-mode . lsp)
 	 (latex-mode . lsp)
 	 (lsp-enable-which-key-integration . lsp)
@@ -268,25 +269,6 @@
   (dap-tooltip-mode 1)
   (tooltip-mode 1)
   (dap-ui-controls-mode 1)
-  ;; dap-cpp-c-rust
-  (require 'dap-lldb)
-  (require 'dap-gdb-lldb)
-  (dap-register-debug-template
-   "Rust::LLDB Run Configuration"
-   (list :type "lldb"
-	 :request "launch"
-	 :name "LLDB::Run"
-	 :gdbpath "rust-lldb"
-	 :target nil
-	 :cwd nil))
-  (dap-register-debug-template
-   "Rust::GDB Run Configuration"
-   (list :type "gdb"
-	 :request "launch"
-	 :name "GDB::Run"
-	 :gdbpath "home/alangel/.cargo/bin/rust-gdb"
-	 :target nil
-	 :cwd nil))
   ;; dap-python
   (require 'dap-python)
   (setq dap-python-debugger 'debugpy)
@@ -318,20 +300,8 @@
   (python-shell-interpreter-args "-i")
   (python-indent-offset 4))
 
-(use-package pyenv-mode
+(use-package pyvenv
   :ensure t)
-(pyenv-mode)
-
-(require 'pyenv-mode)
-
-(defun projectile-pyenv-mode-set ()
-  "Set pyenv version matching project name."
-  (let ((project (projectile-project-name)))
-    (if (member project (pyenv-mode-versions))
-	(pyenv-mode-set project)
-      (pyenv-mode-unset))))
-
-(add-hook 'projectile-after-switch-project-hook 'projectile-pyenv-mode-set)
 
 (use-package lsp-pyright
  :ensure t
@@ -361,19 +331,6 @@
   (define-key ess-r-mode-map "C-c C-=" 'ess-cycle-assign)
   (define-key inferior-ess-r-mode-map "C-c C-=" 'ess-cycle-assign))
 
-(use-package ccls
-  :ensure t
-  :after lsp
-  :custom (setq ccls-executable "ccls")
-  :hook ((c-mode c++-mode objc-mode cuda-mode) .
-	 (lambda () (require 'ccls) (lsp))))
-
-(use-package rustic
-  :ensure t
-  :config
-  ;; comment to disable rustfmt on save
-  (setq rustic-format-on-save t))
-
 (use-package go-mode
   :ensure t)
 
@@ -383,46 +340,6 @@
 (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
 
 (provide 'gopls-config)
-
-(use-package julia-mode
-  :ensure t)
-
-(use-package julia-repl
-  :ensure t
-  :after julia-mode
-  :hook
-  (julia-mode . julia-repl-mode)
-  :config
-  (julia-repl-set-terminal-backend 'vterm)
-  (setq vterm-kill-buffer-on-exit nil))
-
-;; Vim keys
-(use-package evil
-  :ensure t ;; install the evil package if not installed
-  :init ;; tweak evil's configuration before loading it
-  (setq evil-search-module 'evil-search)
-  (setq evil-ex-complete-emacs-commands nil)
-  (setq evil-vsplit-window-right t)
-  (setq evil-split-window-below t)
-  (setq evil-shift-round nil)
-  (setq evil-want-keybinding nil)
-  (setq evil-want-C-u-scroll t)
-  :config ;; tweak evil after loading it
-  (evil-mode)
-
-(use-package evil-collection
-  :after evil
-  :ensure t
-  :config
-  (evil-collection-init)))
-
-(defun evil-collection-vterm-escape-stay ()
-"Go back to normal state but don't move
-cursor backwards. Moving cursor backwards is the default vim behavior but it is
-not appropriate in some cases like terminals."
-(setq-local evil-move-cursor-back nil))
-
-(add-hook 'vterm-mode-hook #'evil-collection-vterm-escape-stay)
 
 (use-package yasnippet
  :ensure t
