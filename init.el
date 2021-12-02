@@ -48,6 +48,28 @@
 (use-package delight
   :ensure t)
 
+(use-package evil
+  :ensure t ;; install the evil package if not installed
+  :init ;; tweak evil's configuration before loading it
+  (setq evil-search-module 'evil-search)
+  (setq evil-want-keybinding nil)
+  :config ;; tweak evil after loading it
+  (evil-mode)
+
+(use-package evil-collection
+  :after evil
+  :ensure t
+  :config
+  (evil-collection-init)))
+
+(defun evil-collection-vterm-escape-stay ()
+"Go back to normal state but don't move
+cursor backwards. Moving cursor backwards is the default vim behavior but it is
+not appropriate in some cases like terminals."
+(setq-local evil-move-cursor-back nil))
+
+(add-hook 'vterm-mode-hook #'evil-collection-vterm-escape-stay)
+
 ;; Only for text
 (add-hook 'text-mode-hook #'abbrev-mode)
 
@@ -82,19 +104,16 @@
   :ensure t
   :hook (prog-mode . rainbow-delimiters-mode))
 
-(use-package modus-themes
-  :ensure
-  :init
-  ;; Add all your customizations prior to loading the themes
-  (setq modus-themes-italic-constructs t
-	modus-themes-bold-constructs nil
-	modus-themes-region '(bg-only no-extend))
-
-  ;; Load the theme files before enabling a theme
-  (modus-themes-load-themes)
+(use-package doom-themes
+  :ensure t
   :config
-  ;; Load the theme of your choice:
-  (modus-themes-load-operandi)) ;; OR (modus-themes-load-vivendi))
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+	doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (load-theme 'doom-gruvbox t)
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config))
 
 (use-package webjump
   :custom
@@ -371,9 +390,18 @@
 (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize))
 
+(use-package shift-number
+  :ensure t
+  :bind
+  ("C-+" . shift-number-up)
+  ("C--" . shift-number-down))
+
 (use-package yaml-mode
   :ensure t)
 
 (add-hook 'yaml-mode-hook
 	  '(lambda ()
 	     (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+
+(use-package just-mode
+  :ensure t)
