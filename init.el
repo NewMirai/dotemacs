@@ -8,23 +8,14 @@
 
 (column-number-mode)
 
-(defun my_starters_hook ()
-  "Hooks to trigger at startup."
-  (toggle-frame-fullscreen))
-
-(add-hook 'after-init-hook 'my_starters_hook)
-
-(defun display-line-numbers-custom-hook ()
-  "Hook to enable relative line numbers in some modes."
-  (display-line-numbers-mode 'relative))
-
-(add-hook (or 'prog-mode-hook 'text-mode-hook) 'display-line-numbers-custom-hook)
-
 (setq make-backup-files nil) ; remove backup files
 ;; Set up the visible bell
 (setq visible-bell t)
 
-(set-face-attribute 'default nil :font "Fira Code" :height 140)
+;; Use short answers
+(setq use-short-answers t)
+
+(set-face-attribute 'default nil :font "RobotoMono Nerd Font" :height 130)
 
 ;; Make ESC quit prompts
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -32,21 +23,42 @@
 (setq gc-cons-threshold 100000000)
 (setq read-process-output-max (* 1024 1024))
 
-(setq lsp-keymap-prefix "C-c l")
-
-;; Window move
-
-(global-set-key (kbd "C-c <left>")  'windmove-left)
-(global-set-key (kbd "C-c <right>") 'windmove-right)
-(global-set-key (kbd "C-c <up>")    'windmove-up)
-(global-set-key (kbd "C-c <down>")  'windmove-down)
-
 ;; Clock display
 (display-time-mode 1)
 
-;; Delight
-(use-package delight
-  :ensure t)
+;; Adjust dired behaviour
+(setq dired-kill-when-opening-new-dired-buffer t)
+(setq dired-do-revert-buffer t)
+(setq dired-create-destination-dirs 'ask)
+
+;; Dired X
+(with-eval-after-load 'dired
+(require 'dired-x)
+;; Set dired-x global variables here.  For example:
+(setq dired-x-hands-off-my-keys nil))
+
+(add-hook 'dired-mode-hook
+	(lambda ()
+	    ;; Set dired-x buffer-local variables here.  For example:
+	    (dired-omit-mode 1)
+	    ))
+
+;; Initialize package sources
+(require 'package)
+
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+			 ("org" . "https://orgmode.org/elpa/")
+			 ("elpa" . "https://elpa.gnu.org/packages/")))
+
+(package-initialize)
+(unless package-archive-contents
+ (package-refresh-contents))
+
+;; Initialize use-package on non-Linux platforms
+(unless (package-installed-p 'use-package)
+   (package-install 'use-package))
+
+(require 'use-package)
 
 (use-package evil
   :ensure t ;; install the evil package if not installed
@@ -72,52 +84,70 @@ not appropriate in some cases like terminals."
 
 ;; Only for text
 (add-hook 'text-mode-hook #'abbrev-mode)
-
-;; Initialize package sources
-(require 'package)
-
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			 ("org" . "https://orgmode.org/elpa/")
-			 ("elpa" . "https://elpa.gnu.org/packages/")))
-
-(package-initialize)
-(unless package-archive-contents
- (package-refresh-contents))
-
-;; Initialize use-package on non-Linux platforms
-(unless (package-installed-p 'use-package)
-   (package-install 'use-package))
-
-(require 'use-package)
-
-;; Install quelpa
-(use-package quelpa
-  :ensure t)
+(setq abbrev-suggest t)
 
 (use-package vterm
     :ensure t)
 
-(use-package all-the-icons
-  :ensure t)
+(use-package multi-vterm
+	:ensure t
+	:config
+	(add-hook 'vterm-mode-hook
+			(lambda ()
+			(setq-local evil-insert-state-cursor 'box)
+			(evil-insert-state)))
+	(define-key vterm-mode-map [return]                      #'vterm-send-return)
 
-(use-package rainbow-delimiters
-  :ensure t
-  :hook (prog-mode . rainbow-delimiters-mode))
+	(setq vterm-keymap-exceptions nil)
+	(evil-define-key 'insert vterm-mode-map (kbd "C-e")      #'vterm--self-insert)
+	(evil-define-key 'insert vterm-mode-map (kbd "C-f")      #'vterm--self-insert)
+	(evil-define-key 'insert vterm-mode-map (kbd "C-a")      #'vterm--self-insert)
+	(evil-define-key 'insert vterm-mode-map (kbd "C-v")      #'vterm--self-insert)
+	(evil-define-key 'insert vterm-mode-map (kbd "C-b")      #'vterm--self-insert)
+	(evil-define-key 'insert vterm-mode-map (kbd "C-w")      #'vterm--self-insert)
+	(evil-define-key 'insert vterm-mode-map (kbd "C-u")      #'vterm--self-insert)
+	(evil-define-key 'insert vterm-mode-map (kbd "C-d")      #'vterm--self-insert)
+	(evil-define-key 'insert vterm-mode-map (kbd "C-n")      #'vterm--self-insert)
+	(evil-define-key 'insert vterm-mode-map (kbd "C-m")      #'vterm--self-insert)
+	(evil-define-key 'insert vterm-mode-map (kbd "C-p")      #'vterm--self-insert)
+	(evil-define-key 'insert vterm-mode-map (kbd "C-j")      #'vterm--self-insert)
+	(evil-define-key 'insert vterm-mode-map (kbd "C-k")      #'vterm--self-insert)
+	(evil-define-key 'insert vterm-mode-map (kbd "C-r")      #'vterm--self-insert)
+	(evil-define-key 'insert vterm-mode-map (kbd "C-t")      #'vterm--self-insert)
+	(evil-define-key 'insert vterm-mode-map (kbd "C-g")      #'vterm--self-insert)
+	(evil-define-key 'insert vterm-mode-map (kbd "C-c")      #'vterm--self-insert)
+	(evil-define-key 'insert vterm-mode-map (kbd "C-SPC")    #'vterm--self-insert)
+	(evil-define-key 'normal vterm-mode-map (kbd "C-d")      #'vterm--self-insert)
+	(evil-define-key 'normal vterm-mode-map (kbd ",c")       #'multi-vterm)
+	(evil-define-key 'normal vterm-mode-map (kbd ",n")       #'multi-vterm-next)
+	(evil-define-key 'normal vterm-mode-map (kbd ",p")       #'multi-vterm-prev)
+	(evil-define-key 'normal vterm-mode-map (kbd "i")        #'evil-insert-resume)
+	(evil-define-key 'normal vterm-mode-map (kbd "o")        #'evil-insert-resume)
+	(evil-define-key 'normal vterm-mode-map (kbd "<return>") #'evil-insert-resume))
+
+(use-package all-the-icons
+   :ensure t)
+
+ (use-package rainbow-delimiters
+   :ensure t
+   :hook (prog-mode . rainbow-delimiters-mode))
+
+ ;;(load-theme 'modus-vivendi)
 
 (use-package doom-themes
-  :ensure t
-  :config
-  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-	doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-gruvbox t)
-  ;; Enable flashing mode-line on errors
-  (doom-themes-visual-bell-config)
-  ;; Corrects (and improves) org-mode's native fontification.
-  (doom-themes-org-config))
+:ensure t
+:config
+    (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+    doom-themes-enable-italic t) ; if nil, italics is universally disabled
+    (load-theme 'doom-gruvbox t)
+    ;; Enable flashing mode-line on errors
+    (doom-themes-visual-bell-config)
+    ;; Corrects (and improves) org-mode's native fontification.
+    (doom-themes-org-config))
 
 (use-package webjump
   :custom
-  (webjump-sites '(("Github" . "https://github.com/NewMirai")
+  (webjump-sites '(("Github" . "https://github.com/aanghelidi")
       ("Web search[DuckDuckgo]" .
        [simple-query "www.duckduckgo.com" "https://www.duckduckgo.com/?q=" ""])
       ("Google search" .
@@ -190,10 +220,9 @@ not appropriate in some cases like terminals."
 (use-package marginalia
   :ensure t
   :bind (("M-A" . marginalia-cycle)
-	 :map minibuffer-local-map
-	 ("M-A" . marginalia-cycle))
+	 :map minibuffer-local-map))
   :init
-  (marginalia-mode))
+  (marginalia-mode)
 
 (marginalia-mode)
 
@@ -230,23 +259,6 @@ not appropriate in some cases like terminals."
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
-(use-package projectile
-   :ensure t
-   :diminish projectile-mode
-   :config (projectile-mode)
-   ;; Python setup projects
-   (projectile-register-project-type 'kedro '("pyproject.toml" "notebooks" "logs" "conf" "src" "setup.cfg" "docs")
-			     :project-file "pyproject.toml"
-			     :compile "kedro build-docs"
-			     :install "kedro install --build-reqs"
-			     :test "kedro test -vvv"
-			     :run "kedro run"
-			     :test-prefix "test_"
-			     :package "kedro package")
-   :custom ((projectile-completion-system 'default))
-   :bind-keymap
-   ("C-c p" . projectile-command-map))
-
 ;; Git setup
 (use-package magit
   :ensure t)
@@ -258,6 +270,9 @@ not appropriate in some cases like terminals."
 ;; LSP mode
 (use-package lsp-mode
   :ensure t
+  :init (setq lsp-keymap-prefix "C-c l")
+  :config
+  (lsp-dired-mode)
   :custom
   (lsp-headerline-breadcrumb-enable nil)
   (lsp-signature-auto-activate nil)
@@ -265,10 +280,8 @@ not appropriate in some cases like terminals."
   (lsp-enable-file-watchers nil)
   (lsp-log-io nil)
    :hook (python-mode . lsp)
-	 (ess-r-mode . lsp)
-	 (inferior-ess-r-mode . lsp)
 	 (go-mode . lsp)
-	 (latex-mode . lsp)
+	 (js-mode . lsp)
 	 (lsp-enable-which-key-integration . lsp)
   :commands lsp)
 
@@ -313,42 +326,30 @@ not appropriate in some cases like terminals."
 
 ;; Python setup
 (use-package python
-  :ensure t
-  :custom
-  (python-shell-interpreter "python")
-  (python-shell-interpreter-args "-i")
-  (python-indent-offset 4))
+    :custom
+    (python-shell-interpreter "python")
+    (python-shell-interpreter-args "-i")
+    (python-indent-offset 4))
 
 (use-package pyvenv
-  :ensure t)
+  :ensure t
+  :init
+  (setenv "WORKON_HOME" "~/.pyenv/versions"))
 
 (use-package lsp-pyright
- :ensure t
- :custom
- (setq lsp-pyright-auto-import-completions t)
- (setq lsp-pyright-diagnostic-mode "workspace")
- (setq lsp-pyright-typechecking-mode "basic")
- :hook (python-mode . (lambda ()
-			   (require 'lsp-pyright)
-			   (lsp))))
-
+:ensure t
+:custom
+(setq lsp-pyright-auto-import-completions t)
+(setq lsp-pyright-diagnostic-mode "workspace")
+(setq lsp-pyright-typechecking-mode "basic")
+:hook (python-mode . (lambda ()
+			    (require 'lsp-pyright)
+			    (lsp))))
 (use-package numpydoc
-  :ensure t
-  :after python
-  :bind (:map python-mode-map
-	      ("C-c d" . numpydoc-generate)))
-
-(use-package ess
-  :ensure t
-  :custom
-  (ess-history-file nil)
-  (ess-style 'Rstudio)
-  (ess-source-directory (lambda()
-			  (concat ess-directory "src/")))
-  :config
-  (require 'ess-r-mode)
-  (define-key ess-r-mode-map "C-c C-=" 'ess-cycle-assign)
-  (define-key inferior-ess-r-mode-map "C-c C-=" 'ess-cycle-assign))
+    :ensure t
+    :after python
+    :bind (:map python-mode-map
+		("C-c d" . numpydoc-generate)))
 
 (use-package go-mode
   :ensure t)
@@ -359,6 +360,8 @@ not appropriate in some cases like terminals."
 (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
 
 (provide 'gopls-config)
+
+
 
 (use-package yasnippet
  :ensure t
@@ -372,8 +375,6 @@ not appropriate in some cases like terminals."
 (use-package yasnippet-snippets
   :ensure t)
 
-(use-package tex :defer t :ensure auctex :config (setq TeX-auto-save t))
-
 (use-package markdown-mode
   :ensure t
   :commands (markdown-mode gfm-mode)
@@ -384,8 +385,6 @@ not appropriate in some cases like terminals."
 
 (use-package exec-path-from-shell
   :ensure t)
-
-(global-set-key (kbd "C-c c") 'shell-command)
 
 (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize))
@@ -403,5 +402,19 @@ not appropriate in some cases like terminals."
 	  '(lambda ()
 	     (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
 
-(use-package just-mode
-  :ensure t)
+(use-package docker
+  :ensure t
+  :bind ("C-c d" . docker))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(docker yaml-mode shift-number exec-path-from-shell yasnippet-snippets yasnippet go-mode numpydoc lsp-pyright pyvenv flycheck company-box company dap-mode lsp-ui lsp-mode forge magit embark-consult embark consult orderless marginalia selectrum which-key org-bullets pdf-tools dashboard doom-themes rainbow-delimiters all-the-icons multi-vterm vterm evil-collection evil use-package)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
