@@ -405,16 +405,3 @@ not appropriate in some cases like terminals."
 (use-package docker
   :ensure t
   :bind ("C-c d" . docker))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(docker yaml-mode shift-number exec-path-from-shell yasnippet-snippets yasnippet go-mode numpydoc lsp-pyright pyvenv flycheck company-box company dap-mode lsp-ui lsp-mode forge magit embark-consult embark consult orderless marginalia selectrum which-key org-bullets pdf-tools dashboard doom-themes rainbow-delimiters all-the-icons multi-vterm vterm evil-collection evil use-package)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )

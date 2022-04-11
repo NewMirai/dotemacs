@@ -151,9 +151,6 @@
 	     (evil-define-key 'normal vterm-mode-map (kbd "<return>") #'evil-insert-resume))
    #+end_src
 
-   #+RESULTS:
-   : t
-
 ** Themes
    #+begin_src emacs-lisp
      (use-package all-the-icons
